@@ -21,6 +21,11 @@ Konteks kompetisi ini berkisar pada manajemen risiko dalam layanan kepabeanan gu
 
 ## Pendekatan yang saya lakukan
 ### Feature Engineering
+<p align="center">
+  <img src="https://drive.google.com/uc?export=view&id=15xlf1wFZa1EAHFmdxDlSLBw8bPxq3rj4" alt="Feature Engineering">
+</p>
+
+
 
 
 
