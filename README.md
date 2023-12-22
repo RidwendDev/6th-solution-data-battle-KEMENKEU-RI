@@ -59,10 +59,47 @@ Oiya untuk penjelasan lebih lanjut mengenai `shap` bisa dibaca disini:
 - https://shap.readthedocs.io/en/latest/
 - https://towardsdatascience.com/using-shap-values-to-explain-how-your-machine-learning-model-works-732b3f40e137
 
-
 ### Modeling
-### Model Evaluation
+Untuk modeling yang dilakukan sebenarnya disini saya sudah banyak melakukan exploring berbagai model mulai dari yang sederhana dengan linear model sampai yang sedikit "heavy" seperti MLP. Seiring berjalanya waktu dan berbagai trial&error yang dilakukan model terbaik datang dari boosting & tree based model. Saya juga mencoba memanfaatkan library `LazyPredict` dan mendapatkan hasil yang sama yaitu model terbaik untuk data ini adalah menggunakan pendekatan boosting&tree. Di submission awal awal saya sempat untuk melakukan submit dengan model tertinggi yaitu XGBOOST saja tetapi hasil akurasinya juga tidak begitu baik, akhirnya di submission berikutnya saya mencoba untuk menggunakan teknik ensembling seperti Voting dan Stacking, setelah beberapa kali mencoba melakukan submit lagi hasil dari algoritma ensemble stacking memiliki akurasi yang lebih baik dibanding pendekatan voting. Long story short akhirnya saya memutuskan untuk melakukan modeling dengna melakukan ensemble stacking 4 model dengan performa terbaik yaitu `ExtraTree Classifier, RandomForest Classifier, XGBClassifier, serta LGBMClassifier` dengan dikombinasikan oleh `meta classifiernya adalah Logistic Regression`. (oiya disini saya juga memanfaatkan package `optuna` untuk melakukan hyperparameter tuning di setiap base modelnya)
+
+<p align="center">
+  <img src="https://drive.google.com/uc?export=view&id=1e5lAwIuis5aRVUZtzkSqlFl18t2CntOR" alt="top10">
+</p>
+
+##### Simple code
+```
+stacking_model = StackingClassifier(
+    estimators=[('etc', etc_model), ('rfc', rf_model), ('xgb', xgb_model), ('lgb', lgb_model)],
+    final_estimator=LogisticRegression(**logit_params),
+    stack_method='auto', 
+)
+```
+
+### Performance Evaluation
+
+<p align="center">
+  <img src="https://drive.google.com/uc?export=view&id=1snQxbUyxhnEX_81wPz8A--hKcGx4CFu6" alt="top10">
+</p>
 
 
+```
+Classification Report:
+              precision    recall  f1-score   support
 
+           0       0.97      0.99      0.98     83999
+           1       0.86      0.70      0.77      4084
+           2       0.86      0.70      0.77      3910
 
+    accuracy                           0.97     91993
+   macro avg       0.90      0.80      0.84     91993
+weighted avg       0.96      0.97      0.96     91993
+```
+
+Dari classification report tersebut kita dapat melihat evaluasi model klasifikasi yang telah dibangun dimana Model memiliki tingkat presisi (precision) tinggi untuk kelas 0 (97%), tetapi lebih rendah untuk kelas 1 (86%) dan kelas 2 (86%). Lalu untuk tingkat recall (sensitivitas) model tinggi untuk kelas 0 (99%), tetapi lebih rendah untuk kelas 1 (70%) dan kelas 2 (70%). Hal yang sama tentunya juga di F1-score  yang mengukur keseimbangan antara precision dan recall. Kinerja F1-score lebih rendah untuk kelas 1 (77%) dan kelas 2 (77%) dibandingkan kelas 0 yang menyentuh (98%). Hal ini tentunya didasarkan dari ketidakseimbangan kelas yang dimiliki, terlihat pada kolom support dimana instance aktual dari setiap kelas dalam test data, kelas 0 jauh lebih banyak dibanding dua kelas lain. And then finally didapat akurasi dari  keseluruhan model yang telah dibangun adalah 97%. 💐 <br>
+
+#### **Private Leaderboard, apa kabar??!!** 😁
+<p align="center">
+  <img src="https://drive.google.com/uc?export=view&id=1UL98nj2Ha_wEAIR88qwZ73IicChPCcaA" alt="top10">
+</p>
+Alhamdulillah Improve...<br>
+Sekian yaakk yang makasih yang udah baca baca. Semoga bermanfaat Aamiin... 🙏
